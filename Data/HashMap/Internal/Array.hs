@@ -5,7 +5,11 @@
 {-# LANGUAGE ScopedTypeVariables   #-}
 {-# LANGUAGE TemplateHaskellQuotes #-}
 {-# LANGUAGE UnboxedTuples         #-}
-{-# OPTIONS_GHC -fno-full-laziness -funbox-strict-fields #-}
+{-# LANGUAGE QuantifiedConstraints #-}
+{-# LANGUAGE PartialTypeConstructors #-}
+{-# LANGUAGE ExplicitNamespaces #-}
+{-# LANGUAGE TypeOperators #-}
+{-# OPTIONS_GHC -fno-full-laziness -funbox-strict-fields -fno-enable-rewrite-rules #-}
 {-# OPTIONS_HADDOCK not-home #-}
 
 -- | = WARNING
@@ -103,24 +107,7 @@ import qualified Language.Haskell.TH.Syntax as TH
 import qualified Prelude
 #endif
 
-
-#if defined(ASSERTS)
--- This fugly hack is brought by GHC's apparent reluctance to deal
--- with MagicHash and UnboxedTuples when inferring types. Eek!
-# define CHECK_BOUNDS(_func_,_len_,_k_) \
-if (_k_) < 0 || (_k_) >= (_len_) then error ("Data.HashMap.Internal.Array." ++ (_func_) ++ ": bounds error, offset " ++ show (_k_) ++ ", length " ++ show (_len_)) else
-# define CHECK_OP(_func_,_op_,_lhs_,_rhs_) \
-if not ((_lhs_) _op_ (_rhs_)) then error ("Data.HashMap.Internal.Array." ++ (_func_) ++ ": Check failed: _lhs_ _op_ _rhs_ (" ++ show (_lhs_) ++ " vs. " ++ show (_rhs_) ++ ")") else
-# define CHECK_GT(_func_,_lhs_,_rhs_) CHECK_OP(_func_,>,_lhs_,_rhs_)
-# define CHECK_LE(_func_,_lhs_,_rhs_) CHECK_OP(_func_,<=,_lhs_,_rhs_)
-# define CHECK_EQ(_func_,_lhs_,_rhs_) CHECK_OP(_func_,==,_lhs_,_rhs_)
-#else
-# define CHECK_BOUNDS(_func_,_len_,_k_)
-# define CHECK_OP(_func_,_op_,_lhs_,_rhs_)
-# define CHECK_GT(_func_,_lhs_,_rhs_)
-# define CHECK_LE(_func_,_lhs_,_rhs_)
-# define CHECK_EQ(_func_,_lhs_,_rhs_)
-#endif
+import GHC.Types (Total, type(@))
 
 data Array a = Array {
       unArray :: !(SmallArray# a)
@@ -533,7 +520,7 @@ newtype STA a = STA {_runSTA :: forall s. SmallMutableArray# s a -> ST s (Array 
 runSTA :: Int -> STA a -> Array a
 runSTA !n (STA m) = runST $ new_ n >>= \ (MArray ar) -> m ar
 
-traverse :: Applicative f => (a -> f b) -> Array a -> f (Array b)
+traverse :: (Total f, Applicative f) => (a -> f b) -> Array a -> f (Array b)
 traverse f = \ !ary ->
   let
     !len = length ary
@@ -549,7 +536,7 @@ traverse f = \ !ary ->
 -- TODO: Would it be better to just use a lazy traversal
 -- and then force the elements of the result? My guess is
 -- yes.
-traverse' :: Applicative f => (a -> f b) -> Array a -> f (Array b)
+traverse' :: (Total f, Applicative f) => (a -> f b) -> Array a -> f (Array b)
 traverse' f = \ !ary ->
   let
     !len = length ary
