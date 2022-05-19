@@ -1,5 +1,6 @@
 {-# LANGUAGE CPP                 #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE PartialTypeConstructors, QuantifiedConstraints #-}
 {-# OPTIONS_GHC -fno-full-laziness -funbox-strict-fields #-}
 {-# OPTIONS_HADDOCK not-home #-}
 

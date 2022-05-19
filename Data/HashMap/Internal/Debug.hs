@@ -1,5 +1,6 @@
 {-# LANGUAGE CPP              #-}
 {-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE PartialTypeConstructors, QuantifiedConstraints #-}
 
 -- | = WARNING
 --

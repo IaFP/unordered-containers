@@ -4,6 +4,7 @@
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE Trustworthy        #-}
 {-# LANGUAGE TypeFamilies       #-}
+{-# LANGUAGE PartialTypeConstructors, QuantifiedConstraints #-}
 {-# OPTIONS_HADDOCK not-home #-}
 
 ------------------------------------------------------------------------
@@ -106,7 +107,7 @@ import qualified Data.Foldable              as Foldable
 import qualified Data.HashMap.Internal      as H
 import qualified Data.List                  as List
 import qualified GHC.Exts                   as Exts
-import qualified Language.Haskell.TH.Syntax as TH
+-- import qualified Language.Haskell.TH.Syntax as TH
 
 -- | A set of values.  A set cannot contain duplicate values.
 newtype HashSet a = HashSet {
@@ -116,7 +117,7 @@ newtype HashSet a = HashSet {
 type role HashSet nominal
 
 -- | @since 0.2.17.0
-deriving instance TH.Lift a => TH.Lift (HashSet a)
+-- deriving instance TH.Lift a => TH.Lift (HashSet a)
 
 instance (NFData a) => NFData (HashSet a) where
     rnf = rnf . asMap

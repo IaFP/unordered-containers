@@ -102,7 +102,7 @@ import Prelude             hiding (all, filter, foldMap, foldl, foldr, length,
                             map, read, traverse)
 
 import qualified GHC.Exts                   as Exts
-import qualified Language.Haskell.TH.Syntax as TH
+-- import qualified Language.Haskell.TH.Syntax as TH
 #if defined(ASSERTS)
 import qualified Prelude
 #endif
@@ -522,15 +522,16 @@ fromList' n xs0 =
                             go xs mary (i+1)
 
 -- | @since 0.2.17.0
-instance TH.Lift a => TH.Lift (Array a) where
-#if MIN_VERSION_template_haskell(2,16,0)
-  liftTyped ar = [|| fromList' arlen arlist ||]
-#else
-  lift ar = [| fromList' arlen arlist |]
-#endif
-    where
-      arlen = length ar
-      arlist = toList ar
+-- instance TH.Lift a => TH.Lift (Array a) where
+-- #if MIN_VERSION_template_haskell(2,16,0)
+--   liftTyped ar = [|| fromList' arlen arlist ||]
+-- #else
+--   lift ar = [| fromList' arlen arlist |]
+-- #endif
+--     where
+--       arlen :: Int
+--       arlen = I# (sizeofSmallArray# (unArray ar))
+--       arlist = toList ar
 
 toList :: Array a -> [a]
 toList = foldr (:) []
