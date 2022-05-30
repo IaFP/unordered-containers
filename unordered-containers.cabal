@@ -39,7 +39,7 @@ tested-with:
 
 flag debug
   description:  Enable debug support
-  default:      False
+  default:      True
 
 library
   exposed-modules:
@@ -68,7 +68,9 @@ library
     ScopedTypeVariables,
     MagicHash,
     BangPatterns
-
+  if impl(ghc >= 9.0.3)
+       default-extensions: PartialTypeConstructors
+    
   ghc-options: -Wall -O2 -fwarn-tabs -ferror-spans
 
   -- For dumping the generated code:

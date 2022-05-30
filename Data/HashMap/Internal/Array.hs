@@ -107,7 +107,7 @@ import qualified GHC.Exts                   as Exts
 import qualified Prelude
 #endif
 
-import GHC.Types (Total, type(@))
+import GHC.Types (type(@))
 
 #if defined(ASSERTS)
 -- This fugly hack is brought by GHC's apparent reluctance to deal
@@ -541,7 +541,7 @@ newtype STA a = STA {_runSTA :: forall s. SmallMutableArray# s a -> ST s (Array 
 runSTA :: Int -> STA a -> Array a
 runSTA !n (STA m) = runST $ new_ n >>= \ (MArray ar) -> m ar
 
-traverse :: (Total f, Applicative f) => (a -> f b) -> Array a -> f (Array b)
+traverse :: (Applicative f) => (a -> f b) -> Array a -> f (Array b)
 traverse f = \ !ary ->
   let
     !len = length ary
@@ -557,7 +557,7 @@ traverse f = \ !ary ->
 -- TODO: Would it be better to just use a lazy traversal
 -- and then force the elements of the result? My guess is
 -- yes.
-traverse' :: (Total f, Applicative f) => (a -> f b) -> Array a -> f (Array b)
+traverse' :: (Applicative f) => (a -> f b) -> Array a -> f (Array b)
 traverse' f = \ !ary ->
   let
     !len = length ary

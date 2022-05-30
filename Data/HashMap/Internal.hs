@@ -169,7 +169,6 @@ import GHC.Stack                  (HasCallStack)
 import Prelude                    hiding (filter, foldl, foldr, lookup, map,
                                    null, pred)
 import Text.Read                  hiding (step)
-import GHC.Types (Total, type(@))
 
 import qualified Data.Data                   as Data
 import qualified Data.Foldable               as Foldable
@@ -1771,7 +1770,7 @@ map f = mapWithKey (const f)
 -- associated with the keys involved will depend in an unspecified way on
 -- their insertion order.
 traverseWithKey
-  :: (Total f, Applicative f)
+  :: (Applicative f)
   => (k -> v1 -> f v2)
   -> HashMap k v1 -> f (HashMap k v2)
 traverseWithKey f = go

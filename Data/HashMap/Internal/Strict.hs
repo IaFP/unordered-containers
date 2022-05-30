@@ -134,7 +134,6 @@ import Data.HashMap.Internal (Hash, HashMap (..), Leaf (..), LookupRes (..),
                               fullBitmap, hash, index, mask, nextShift, ptrEq,
                               sparseIndex)
 import Prelude               hiding (lookup, map)
-import GHC.Types             (Total)
 
 -- See Note [Imports from Data.HashMap.Internal]
 import qualified Data.HashMap.Internal       as HM
@@ -593,7 +592,7 @@ mapMaybe f = mapMaybeWithKey (const f)
 -- associated with the keys involved will depend in an unspecified way on
 -- their insertion order.
 traverseWithKey
-  :: (Total f, Applicative f)
+  :: (Applicative f)
   => (k -> v1 -> f v2)
   -> HashMap k v1 -> f (HashMap k v2)
 traverseWithKey f = go
