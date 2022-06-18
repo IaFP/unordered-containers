@@ -179,7 +179,7 @@ import qualified Data.Hashable.Lifted        as H
 import qualified Data.HashMap.Internal.Array as A
 import qualified Data.List                   as List
 import qualified GHC.Exts                    as Exts
--- import qualified Language.Haskell.TH.Syntax  as TH
+import qualified Language.Haskell.TH.Syntax  as TH
 
 -- | Convenience function.  Compute a hash value for the given value.
 hash :: H.Hashable a => a -> Hash
@@ -192,12 +192,12 @@ instance (NFData k, NFData v) => NFData (Leaf k v) where
     rnf (L k v) = rnf k `seq` rnf v
 
 -- | @since 0.2.17.0
--- instance (TH.Lift k, TH.Lift v) => TH.Lift (Leaf k v) where
--- #if MIN_VERSION_template_haskell(2,16,0)
---   liftTyped (L k v) = [|| L k $! v ||]
--- #else
---   lift (L k v) = [| L k $! v |]
--- #endif
+instance (TH.Lift k, TH.Lift v) => TH.Lift (Leaf k v) where
+#if MIN_VERSION_template_haskell(2,16,0)
+  liftTyped (L k v) = [|| L k $! v ||]
+#else
+  lift (L k v) = [| L k $! v |]
+#endif
 
 -- | @since 0.2.14.0
 instance NFData k => NFData1 (Leaf k) where
@@ -251,7 +251,7 @@ data HashMap k v
 type role HashMap nominal representational
 
 -- | @since 0.2.17.0
--- deriving instance (TH.Lift k, TH.Lift v) => TH.Lift (HashMap k v)
+deriving instance (TH.Lift k, TH.Lift v) => TH.Lift (HashMap k v)
 
 instance (NFData k, NFData v) => NFData (HashMap k v) where
     rnf Empty                 = ()
